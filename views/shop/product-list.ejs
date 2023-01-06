@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title><%=pageTitle%></title>
+    <link rel="stylesheet" href="/css/main.css" />
+    <link rel="stylesheet" href="/css/product.css" />
+  </head>
+
+  <body>
+    <%-include('../includes/navigation.ejs')%>
+
+    <main>
+      <h1>My Products</h1>
+      <p>List of all the products...</p>
+      <% if(shopData.length>0){ %> <%for(data of shopData){%>
+      <div class="grid">
+        <article class="card product-item">
+          <header class="card__header">
+            <h1 class="product__title"><%=data.title%></h1>
+          </header>
+          <div class="card__image">
+            <img src="<%=data.imageUrl%> " alt="A Book" />
+          </div>
+          <div class="card__content">
+            <h2 class="product__price"><%=data.price%></h2>
+            <p class="product__description"><%=data.description%></p>
+          </div>
+          <div class="card__actions">
+            <a href="/product/<%=data.id%>" class="btn">Details</a>
+            <%-include('../includes/add-to-cart.ejs')%>
+          </div>
+        </article>
+      </div>
+      <%}%> <% } else{ %>
+
+      <h1>no products found</h1>
+      <% } %>
+    </main>
+  </body>
+</html>
