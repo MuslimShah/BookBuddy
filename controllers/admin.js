@@ -43,7 +43,10 @@ exports.getEditProduct = async (req, res, next) => {
     return res.redirect("/");
   }
   try { 
-     const data = await Product.findByPk(productId);
+    //  const data = await Product.findByPk(productId);
+    const product = await req.user.getProducts({ where: { id: productId } });//it returns an array
+    const data = product[0];
+     console.log(product);
      res.render("admin/edit-product", {
        pageTitle: "Edit product",
        path: "/admin/edit-product",
@@ -64,6 +67,8 @@ exports.postEditProduct = async (req, res, next) => {
   const description = req.body.description;
   try {
     const data = await Product.findByPk(id);
+   
+    // const data = product[0];
     data.title = title;
     data.imageUrl = imageUrl;
     data.description = description;
@@ -89,7 +94,8 @@ exports.postDeleteProduct = async (req, res, next) => {
 };
 
 exports.getAdminProduct = async (req, res, next) => {
-  const data = await Product.findAll();
+  // const data = await Product.findAll();
+  const data = await req.user.getProducts();
   // console.log("hfa");
   res.render("admin/admin-product", {
     shopData: data,
