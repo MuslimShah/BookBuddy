@@ -23,26 +23,12 @@ exports.getProducts =async (req, res, next) => {
     });
 };
 //==> cart
-exports.getCart = (req, res, next) => {
-  Cart.getCartProducts((prod) => {
-    Product.fetchAll((products) => {
-      let cartProducts = [];
-      if (prod == null) {
-       return res.render("shop/cart", { pageTitle: "Cart", data: []});//here might face a bug when load view need to be fixed
-      }
-      for (data of products) {
-        const cartData = prod.prouduct.find(d => {
-         return d.id === data.id;
-        });
-        if (cartData) {
-          cartProducts.push({ cData:data,qty:cartData.qty})
-          // console.log(cartProducts);
-        }
-      }
-      res.render("shop/cart", { pageTitle: "Cart" ,data:cartProducts});
-    });
-    
-  });
+exports.getCart = async(req, res, next) => {
+
+  const cart = await req.user.getCart();
+  const cartProducts = await cart.getProducts();
+  console.log(cartProducts);
+  res.render("shop/cart", { pageTitle: "Cart", data: cartProducts })
 };
 
 //==>/cart post
