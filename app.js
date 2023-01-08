@@ -39,7 +39,7 @@ app.use(errorController.pageNotFound);
 //-------------------------------------------------
 
 //====================== CREATING ASSOCIATIONS ==========================
-Product.belongsTo(User, { constraints: true, ondelete: 'CASCADE  ' });
+Product.belongsTo(User, { constraints: true, ondelete: 'CASCADE' });
 User.hasMany(Product);
 
 //-------------------------------------------------
