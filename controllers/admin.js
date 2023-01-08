@@ -17,13 +17,16 @@ exports.postAddProduct = async (req, res, next) => {
   // const product = new Product(title, imageUrl, price, description);
 
   try {
-    const result = await Product.create({
+//adding magic method of the association to add product
+    req.user.createProduct({
       price: price,
       title: title,
       imageUrl: imageUrl,
       description: description,
-      UserId: req.user.id
+      UserId: req.user.id,
     });
+
+    // const result = await Product.create();
     console.log("====== + book added +");
     res.redirect('/admin/add-product')
 
