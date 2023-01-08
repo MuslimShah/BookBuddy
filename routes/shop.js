@@ -5,9 +5,6 @@ const router = express.Router();
 //shop route
 router.get("/", shopController.getIndex);
 router.get("/cart", shopController.getCart);
-
-
-
 //cart ==>post
 router.post("/add-to-cart", shopController.postCart);
 
