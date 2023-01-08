@@ -3,14 +3,9 @@ const path=require('path')
 const adminRoutes = require('./routes/admin');//ADMIN ROUTES
 const shopRoutes = require("./routes/shop");//SHOP ROUTES
 const sequelize = require('./util/database');//DATABASE
-
-// ==> error controller
-const errorController = require('./controllers/error')
-//REQUIRING PRODUCT MODEL
-const Product = require('./model/product');
-//REQUIRING USER MODEL
-const User = require("./model/user");
-
+const errorController = require('./controllers/error')// ==> error controller
+const Product = require('./model/product');//REQUIRING PRODUCT MODEL
+const User = require("./model/user");//REQUIRING USER MODEL
 const app = express();
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }))
@@ -55,7 +50,7 @@ User.hasMany(Product);
       }
       return user;
     }).then(user => {
-      console.log(user);
+      // console.log(user);
       app.listen(3000, function () {
         console.log("got connected to :3000");
       });

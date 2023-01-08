@@ -22,6 +22,7 @@ exports.postAddProduct = async (req, res, next) => {
       title: title,
       imageUrl: imageUrl,
       description: description,
+      UserId: req.user.id
     });
     console.log("====== + book added +");
     res.redirect('/admin/add-product')

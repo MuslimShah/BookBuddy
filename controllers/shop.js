@@ -4,6 +4,7 @@ const Cart = require("../model/cart");
 //==>/index
 exports.getIndex = async(req, res, next) => {
   const data = await Product.findAll();
+  
    res.render("shop/index", {
      shopData: data,
      pageTitle: "shop",
