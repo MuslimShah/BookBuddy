@@ -57,9 +57,9 @@ Product.belongsToMany(Cart,{through:CartItem})
       }
       return user;
     }).then(user => {
-      return user.createCart();
+      // return user.createCart();
       
-    }).then((cart) => {
+    }).then(() => {
         app.listen(3000, function () {
         console.log("got connected to :3000");
       });
