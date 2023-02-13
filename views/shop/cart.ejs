@@ -5,30 +5,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title><%=pageTitle%></title>
+    <title>
+        <%=pageTitle%>
+    </title>
     <link rel="stylesheet" href="/css/main.css">
 </head>
 
 <body>
- <%-include('../includes/navigation.ejs')-%>
-   <%if(data.length>0){%>
-    <h1>Products</h1>
-       
-    <ul>
-    <% for(item of data){%>
-             <li> <%=item.title%> ( <%=item.CartItem.quantity%> ) 
-            <form action="/delete-cart" method="post">
-                <input type="hidden" name="id" value="<%=item.id%>">
-                <input type="submit" value="Delete" class="btn">
-            </form>
-            
-            </li>
-       <% }%>
+    <%-include('../includes/navigation.ejs')-%>
+        <%if(data.length>0){%>
+            <h1>Products</h1>
 
-       </ul>
-    <%}else{%>
-        <h1>empty cart</h1>
-    <%}%>
+            <ul>
+                <% for(item of data){%>
+                    <li>
+                        <%=item.title%> (
+                            <%=item.CartItem.quantity%> )
+                                <form action="/delete-cart" method="post">
+                                    <input type="hidden" name="id" value="<%=item.id%>">
+                                    <input type="submit" value="Delete" class="btn">
+                                </form>
+
+                    </li>
+                    <% }%>
+
+            </ul>
+            <hr>
+            <div class="center">
+                <form action="/create-order" method="post">
+
+                    <button type="submit" class="btn">Order Now</button>
+                </form>
+            </div>
+            <%}else{%>
+                <h1>empty cart</h1>
+                <%}%>
 </body>
 
 </html>
