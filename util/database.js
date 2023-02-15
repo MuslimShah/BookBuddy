@@ -1,13 +1,17 @@
 var MongoClient = require('mongodb').MongoClient;
 var url = "mongodb://0.0.0.0:27017";
 
-const db = (cb) => {
-    MongoClient.connect(url).then(result => {
-        console.log("connected db=====");
-        cb(result)
+const db = new Promise(async(resolve, reject) => {
 
-    }).catch(err => {
-        console.log("errorr occured ================" + err);
-    })
-}
+    try {
+        const conn = await MongoClient.connect(url);
+        console.log(`------connected to mongodb-------`);
+        return resolve(conn)
+
+    } catch (err) {
+        return reject(`error while connecting to db ${err}`);
+    }
+
+
+});
 module.exports = db;

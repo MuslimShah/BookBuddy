@@ -27,8 +27,11 @@ app.use((req, res, next) => {
 // app.use(shopRoutes);
 
 app.use(errorController.get404);
+db.then(conn => {
+    console.log(conn);
 
-db(client => {
-    console.log(client);
     app.listen(3000, () => console.log(`connected to port:3000`))
+
+}).catch(err => {
+    console.log(err);
 })
