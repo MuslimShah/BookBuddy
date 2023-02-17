@@ -31,6 +31,18 @@ class Product {
         const db = getDb();
         return db.collection('products').find({ _id: new mongodb.ObjectId(prodId) }).next();
     }
+    updateProduct(prodId) {
+        const db = getDb();
+
+        const product = db.collection('products').updateOne({ _id: new mongodb.ObjectId(prodId) }, { $set: this });
+        console.log(`=========== product updated =======`);
+    }
+
+    static delteProduct(prodId) {
+        const db = getDb();
+        const delted = db.collection('products').deleteOne({ _id: new mongodb.ObjectId(prodId) })
+        console.log(`=========== product deleted ============`);
+    }
 
 }
 
