@@ -6,15 +6,11 @@ var url = "mongodb://0.0.0.0:27017/shopDb";
 let connection;
 
 const db = new Promise(async(resolve, reject) => {
-
     try {
         const conn = await MongoClient.connect(url);
-        // console.log(conn);
-        // console.log(conn.db());
         connection = conn.db();
         console.log(`------ connected to mongodb -------`);
         return resolve(true);
-
     } catch (err) {
         return reject(`error while connecting to db ${err}`);
     }
