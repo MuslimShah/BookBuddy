@@ -77,8 +77,9 @@ exports.getProducts = async(req, res, next) => {
 
 };
 
-exports.postDeleteProduct = (req, res, next) => {
+exports.postDeleteProduct = async(req, res, next) => {
     const prodId = req.body.productId;
-    Product.delteProduct(prodId);
+    await Product.delteProduct(prodId);
+    console.log(`=========== product deleted ============`);
     res.redirect('/admin/products')
 };

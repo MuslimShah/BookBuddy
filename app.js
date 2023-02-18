@@ -3,6 +3,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const errorController = require('./controllers/error');
 const { db } = require('./util/database');
+const User = require('./models/user');
 const app = express();
 
 app.set('view engine', 'ejs');
@@ -28,8 +29,8 @@ app.use(shopRoutes);
 
 app.use(errorController.get404);
 db.then(() => {
-
-
+    const user = new User('ali khan', 'ali@gmail.com');
+    user.save();
     app.listen(3000, () => console.log(`connected to port:3000`))
 
 }).catch(err => {

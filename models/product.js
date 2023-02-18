@@ -40,8 +40,8 @@ class Product {
 
     static delteProduct(prodId) {
         const db = getDb();
-        const delted = db.collection('products').deleteOne({ _id: new mongodb.ObjectId(prodId) })
-        console.log(`=========== product deleted ============`);
+        return db.collection('products').deleteOne({ _id: new mongodb.ObjectId(prodId) })
+
     }
 
 }
