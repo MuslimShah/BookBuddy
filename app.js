@@ -16,8 +16,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(async(req, res, next) => {
-    const user = await User.findById("63f22156035de68281d83961");
+    const user = await User.findById("63f252d0aa4333e3058a6fcd");
+    console.log(user.cart.items);
+
     req.user = new User(user.username, user.email, user.cart, user._id);
+
     next()
 });
 
@@ -26,7 +29,7 @@ app.use(shopRoutes);
 
 app.use(errorController.get404);
 db.then(() => {
-    // const user = new User('ali khan', 'ali@gmail.com');
+    // const user = new User('ali khan', 'ali@gmail.com', { items: [], qty: 0 });
     // user.save();
     app.listen(3000, () => console.log(`connected to port:3000`))
 

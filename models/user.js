@@ -18,10 +18,16 @@ class User {
         return db.collection('users').findOne({ _id: new mongodb.ObjectId(userId) });
     };
     addToCart(product) {
-        //returns the index of the product in the cart
-        const cartProductIndex = this.cart.items.findIndex(cp => {
-            return cp.productId.toString() === product._id.toString();
+
+        console.log(this.cart.items);
+        //returns the index of the produsct in the cart
+
+        let cartProductIndex = []
+        cartProductIndex = this.cart.items.findIndex(cp => {
+            return cp._id.toString() === product._id.toString();
         })
+        console.log(cartProductIndex);
+
 
         let newQuantity = 1;
         let updatedCartItems = [...this.cart.items]
@@ -31,11 +37,11 @@ class User {
         } else {
             updatedCartItems.push({ _id: new mongodb.ObjectId(product._id), qty: newQuantity });
         }
-        const prod = { items: [{...product, qty: 1 }] };
+        // const prod = { items: [{...product, qty: 1 }] };
         const db = getDb();
-        const updatedCart = [{
+        const updatedCart = {
             items: updatedCartItems
-        }];
+        };
         return db.collection('users').updateOne({ _id: new mongodb.ObjectId(this._id) }, { $set: { cart: updatedCart } });
     }
 
