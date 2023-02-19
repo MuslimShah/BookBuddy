@@ -1,5 +1,6 @@
 const Product = require('../models/product');
 exports.getAddProduct = (req, res, next) => {
+
     res.render('admin/edit-product', {
         pageTitle: 'Add Product',
         path: '/admin/add-product',
@@ -12,7 +13,7 @@ exports.postAddProduct = (req, res, next) => {
     const imageUrl = req.body.imageUrl;
     const price = req.body.price;
     const description = req.body.description;
-    const prod = new Product(title, price, imageUrl, description);
+    const prod = new Product(title, price, imageUrl, description, req.user._id);
     prod.save();
     res.redirect('/admin/products');
 
@@ -48,12 +49,13 @@ exports.postEditProduct = (req, res, next) => {
     const updatedPrice = req.body.price;
     const updatedImageUrl = req.body.imageUrl;
     const updatedDesc = req.body.description;
+    const userId = req.user._id;
 
     if (!updatedTitle || !updatedPrice || !updatedImageUrl || !updatedDesc) {
         return res.json({ msg: 'please fill complete information' })
     }
     try {
-        const newProduct = new Product(updatedTitle, updatedPrice, updatedImageUrl, updatedDesc);
+        const newProduct = new Product(updatedTitle, updatedPrice, updatedImageUrl, updatedDesc, userId);
         newProduct.updateProduct(prodId);
         res.redirect('/admin/products')
     } catch (err) {
