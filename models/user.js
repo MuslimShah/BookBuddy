@@ -43,10 +43,7 @@ class User {
             const prodIds = this.cart.items.map(i => {
                 return i.productId;
             })
-
             const prod = db.collection('products').find({ _id: { $in: prodIds } }).toArray();
-
-
             const product = await prod;
             const fullProduct = product.map(p => {
                     return {
@@ -60,16 +57,38 @@ class User {
             return fullProduct;
 
 
+
         } catch (err) {
             console.log(`fetching cart error :${err}`);
         }
     }
     deleteCartItem(prodId) {
-        const updatedCartItems = this.cart.items.filter(item => {
-            return item.productId.toString() !== prodId.toString();
-        })
+            const updatedCartItems = this.cart.items.filter(item => {
+                return item.productId.toString() !== prodId.toString();
+            })
+            const db = getDb();
+            return db.collection('users').updateOne({ _id: new mongodb.ObjectId(this._id) }, { $set: { cart: { items: updatedCartItems } } });
+        }
+        //--------------- adding orders -----------------
+    async addOrder() {
         const db = getDb();
-        return db.collection('users').updateOne({ _id: new mongodb.ObjectId(this._id) }, { $set: { cart: { items: updatedCartItems } } });
+        const cartProducts = await this.getCart();
+        const order = {
+            items: cartProducts,
+            user: {
+                _id: new mongodb.ObjectId(this._id),
+                name: this.username,
+                email: this.email
+            }
+        }
+        await db.collection('orders').insertOne(order);
+        const updatedCart = this.cart = { items: [] };
+        await db.collection('users').updateOne({ _id: new mongodb.ObjectId(this._id) }, { $set: { cart: updatedCart } })
+
+    }
+    getOrders() {
+        const db = getDb();
+        return db.collection('orders').find({ 'user._id': new mongodb.ObjectId(this._id) }).toArray()
     }
 }
 
