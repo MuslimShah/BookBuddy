@@ -1,8 +1,9 @@
 const path = require('path');
+require('dotenv').config()
 const express = require('express');
 const bodyParser = require('body-parser');
 const errorController = require('./controllers/error');
-const { db } = require('./util/database');
+const connectDb = require('./util/database');
 const User = require('./models/user');
 const app = express();
 
@@ -22,15 +23,26 @@ app.use(async(req, res, next) => {
     next()
 });
 
-app.use('/admin', adminRoutes);
-app.use(shopRoutes);
+// app.use('/admin', adminRoutes);
+// app.use(shopRoutes);
 
 app.use(errorController.get404);
-db.then(() => {
-    // const user = new User('ali khan', 'ali@gmail.com', { items: [], qty: 0 });
-    // user.save();
-    app.listen(3000, () => console.log(`connected to port:3000`))
+const start = async() => {
+    try {
+        console.log(`initializing connection ...`);
+        await connectDb(process.env.MONGO_URI)
+        app.listen(3000, () => console.log(`connected to port:3000`))
+    } catch (error) {
+        console.log(error);
+    }
+}
+start()
 
-}).catch(err => {
-    console.log(err);
-})
+// db.then(() => {
+// const user = new User('ali khan', 'ali@gmail.com', { items: [], qty: 0 });
+// user.save();
+
+
+// }).catch(err => {
+//     console.log(err);
+// })
