@@ -1,3 +1,36 @@
+const { Schema, mongoose } = require('mongoose');
+
+/**
+ * CREATING A PRODUCT MODEL
+ * THE SCHEMA IS JUST THE STRUCTURE OF OUR MODEL
+ * |-------------------------------------------|
+ * | TITLE | PRICE | DESCRIPTION | I MAGEURL   |
+ * |-------------------------------------------|
+ * */
+
+const productSchema = new Schema({
+    title: {
+        type: String,
+        required: [true, 'you must provide a title']
+    },
+    price: {
+        type: Number,
+        required: [true, 'you must provide the price']
+    },
+    description: {
+        type: String,
+        required: [true, 'you must provide description']
+    },
+    imageUrl: {
+        type: String,
+        required: [true, 'you must enter an image url']
+    }
+})
+
+module.exports = mongoose.model('Product', productSchema);
+
+
+
 // const { getDb } = require('../util/database');
 // const mongodb = require('mongodb');
 // class Product {

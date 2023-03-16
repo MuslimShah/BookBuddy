@@ -13,7 +13,14 @@ exports.postAddProduct = (req, res, next) => {
     const imageUrl = req.body.imageUrl;
     const price = req.body.price;
     const description = req.body.description;
-    const prod = new Product(title, price, imageUrl, description, req.user._id);
+    // const prod = new Product(title, price, imageUrl, description, req.user._id);
+    const prod = new Product({
+        title: title,
+        imageUrl: imageUrl,
+        price: price,
+        description: description
+    });
+
     prod.save();
     res.redirect('/admin/products');
 
@@ -43,20 +50,24 @@ exports.getEditProduct = async(req, res, next) => {
 
 };
 
-exports.postEditProduct = (req, res, next) => {
+exports.postEditProduct = async(req, res, next) => {
     const prodId = req.body.productId;
     const updatedTitle = req.body.title;
     const updatedPrice = req.body.price;
     const updatedImageUrl = req.body.imageUrl;
     const updatedDesc = req.body.description;
-    const userId = req.user._id;
+    // const userId = req.user._id;
 
     if (!updatedTitle || !updatedPrice || !updatedImageUrl || !updatedDesc) {
         return res.json({ msg: 'please fill complete information' })
     }
     try {
-        const newProduct = new Product(updatedTitle, updatedPrice, updatedImageUrl, updatedDesc, userId);
-        newProduct.updateProduct(prodId);
+        const product = await Product.findById(prodId);
+        product.title = updatedTitle;
+        product.price = updatedPrice;
+        product.description = updatedDesc;
+        product.imageUrl = updatedImageUrl;
+        await product.save();
         res.redirect('/admin/products')
     } catch (err) {
         res.json({ msg: 'cannot edit product error' })
@@ -67,7 +78,7 @@ exports.postEditProduct = (req, res, next) => {
 
 exports.getProducts = async(req, res, next) => {
     try {
-        const products = await Product.fetchAll();
+        const products = await Product.find();
         res.render('admin/products', {
             prods: products,
             pageTitle: 'Admin Products',
@@ -81,7 +92,7 @@ exports.getProducts = async(req, res, next) => {
 
 exports.postDeleteProduct = async(req, res, next) => {
     const prodId = req.body.productId;
-    await Product.delteProduct(prodId);
+    await Product.deleteOne({ _id: prodId });
     console.log(`=========== product deleted ============`);
     res.redirect('/admin/products')
 };

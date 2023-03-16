@@ -3,7 +3,7 @@ const User = require('../models/user');
 
 
 exports.getProducts = async(req, res, next) => {
-    const products = await Product.fetchAll();
+    const products = await Product.find();
     res.render('shop/product-list', {
         prods: products,
         pageTitle: 'All Products',
@@ -13,7 +13,6 @@ exports.getProducts = async(req, res, next) => {
 //product details
 exports.getProduct = async(req, res, next) => {
     const prodId = req.params.productId;
-
     const product = await Product.findById(prodId)
 
     res.render('shop/product-detail', {
@@ -25,7 +24,7 @@ exports.getProduct = async(req, res, next) => {
 
 exports.getIndex = async(req, res, next) => {
     try {
-        const products = await Product.fetchAll();
+        const products = await Product.find();
         res.render('shop/index', {
             prods: products,
             pageTitle: 'Shop',
@@ -76,15 +75,4 @@ exports.getOrders = async(req, res, next) => {
         pageTitle: 'Your Orders',
         orders: orders
     });
-
-    // req.user
-    //     .getOrders({ include: ['products'] })
-    //     .then(orders => {
-    //         res.render('shop/orders', {
-    //             path: '/orders',
-    //             pageTitle: 'Your Orders',
-    //             orders: orders
-    //         });
-    //     })
-    //     .catch(err => console.log(err));
 };
