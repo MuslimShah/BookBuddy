@@ -29,7 +29,7 @@ app.use(errorController.get404);
 const start = async() => {
     try {
         console.log(`initializing connection ...`);
-        await connectDb(process.env.MONGO_URI)
+        await connectDb('mongodb://127.0.0.1:27017/shopDb')
             //find user in db if not found create one
         const user = await User.findOne();
         if (!user) {
