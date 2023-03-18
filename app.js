@@ -1,12 +1,14 @@
 const path = require('path');
 require('dotenv').config()
+require('express-async-errors');
 const express = require('express');
 const bodyParser = require('body-parser');
 const errorController = require('./controllers/error');
 const connectDb = require('./util/database');
 const User = require('./models/user');
+const errors = require('./errors/errors')
 const app = express();
-
+//setting view and view engine
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
@@ -15,21 +17,23 @@ const shopRoutes = require('./routes/shop');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
-
+//assigning user to request
 app.use(async(req, res, next) => {
     const user = await User.findById("6412f40214ce60d8cd34defb");
     req.user = user;
     next()
 });
-
+//user routes middlewares
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
-
+//errors
+app.use(errors)
+    //page not found
 app.use(errorController.get404);
 const start = async() => {
     try {
         console.log(`initializing connection ...`);
-        await connectDb('mongodb://127.0.0.1:27017/shopDb')
+        await connectDb(process.env.MONGO_USER)
             //find user in db if not found create one
         const user = await User.findOne();
         if (!user) {
@@ -42,20 +46,10 @@ const start = async() => {
             });
             newUser.save();
         }
-
-
-        app.listen(3000, () => console.log(`connected to port:3000`))
+        const PORT = 3000;
+        app.listen(PORT, () => console.log(`connected to port:${PORT}`))
     } catch (error) {
         console.log(error);
     }
 }
 start()
-
-// db.then(() => {
-// const user = new User('ali khan', 'ali@gmail.com', { items: [], qty: 0 });
-// user.save();
-
-
-// }).catch(err => {
-//     console.log(err);
-// })
