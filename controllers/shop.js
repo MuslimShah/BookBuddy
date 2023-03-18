@@ -23,16 +23,14 @@ exports.getProduct = async(req, res, next) => {
 };
 
 exports.getIndex = async(req, res, next) => {
-    try {
-        const products = await Product.find();
-        res.render('shop/index', {
-            prods: products,
-            pageTitle: 'Shop',
-            path: '/'
-        });
-    } catch (err) {
-        console.log(`error fetching all products in index.js`);
-    }
+
+    const products = await Product.find();
+    res.render('shop/index', {
+        prods: products,
+        pageTitle: 'Shop',
+        path: '/'
+    });
+
 };
 
 exports.getCart = async(req, res, next) => {
@@ -53,13 +51,10 @@ exports.postCart = async(req, res, next) => {
 };
 
 exports.postCartDeleteProduct = async(req, res, next) => {
-    try {
-        const prodId = req.body.productId;
-        await req.user.deleteCartItem(prodId);
-        res.redirect('/cart');
-    } catch (err) {
-        console.log(`error deleting cart item`);
-    }
+
+    const prodId = req.body.productId;
+    await req.user.deleteCartItem(prodId);
+    res.redirect('/cart');
 };
 
 //adding an order
