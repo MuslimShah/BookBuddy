@@ -1,9 +1,9 @@
 const path = require('path');
 require('dotenv').config()
-require('express-async-errors');
+require('express-async-errors'); //handling errors
 const express = require('express');
 const bodyParser = require('body-parser');
-const errorController = require('./controllers/error');
+const pageNotFound = require('./errors/pageNotFound');
 const connectDb = require('./util/database');
 const User = require('./models/user');
 const errors = require('./errors/errors')
@@ -11,7 +11,7 @@ const app = express();
 //setting view and view engine
 app.set('view engine', 'ejs');
 app.set('views', 'views');
-
+//IMPORTING ROUTES
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 
@@ -29,7 +29,7 @@ app.use(shopRoutes);
 //errors
 app.use(errors)
     //page not found
-app.use(errorController.get404);
+app.use(pageNotFound);
 const start = async() => {
     try {
         console.log(`initializing connection ...`);
