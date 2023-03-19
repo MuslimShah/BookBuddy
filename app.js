@@ -2,20 +2,20 @@ const path = require('path');
 require('dotenv').config()
 require('express-async-errors'); //handling errors
 const express = require('express');
-const bodyParser = require('body-parser');
 const pageNotFound = require('./errors/pageNotFound');
 const connectDb = require('./util/database');
 const User = require('./models/user');
 const errors = require('./errors/errors')
 const app = express();
-//setting view and view engine
+//body parser
+app.use(express.urlencoded({ extended: false }))
+    //setting view and view engine
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 //IMPORTING ROUTES
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 
-app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 //assigning user to request
 app.use(async(req, res, next) => {
