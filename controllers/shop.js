@@ -53,8 +53,8 @@ exports.postCart = async(req, res, next) => {
 };
 
 exports.postCartDeleteProduct = async(req, res, next) => {
-
     const prodId = req.body.productId;
+    console.log(prodId);
     await req.user.deleteCartItem(prodId);
     res.redirect('/cart');
 };

@@ -19,7 +19,7 @@ const shopRoutes = require('./routes/shop');
 app.use(express.static(path.join(__dirname, 'public')));
 //assigning user to request
 app.use(async(req, res, next) => {
-    const user = await User.findById("6412f40214ce60d8cd34defb");
+    const user = await User.findById("6417024cc4d0222e2394f30f");
     req.user = user;
     next()
 });
