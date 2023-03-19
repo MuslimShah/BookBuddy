@@ -34,11 +34,13 @@ exports.getIndex = async(req, res, next) => {
 };
 
 exports.getCart = async(req, res, next) => {
-    const products = await req.user.getCart();
+    const products = await req.user.populate('cart.items.productId');
+
+    console.log(products.cart.items);
     res.render('shop/cart', {
         path: '/cart',
         pageTitle: 'Your Cart',
-        products: products
+        products: products.cart.items
     });
 
 };
