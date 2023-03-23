@@ -1,5 +1,7 @@
 const Product = require('../models/product');
 const User = require('../models/user');
+const Order = require('../models/order');
+
 
 
 exports.getProducts = async(req, res, next) => {
@@ -61,7 +63,19 @@ exports.postCartDeleteProduct = async(req, res, next) => {
 
 //adding an order
 exports.postOrder = async(req, res, next) => {
-    await req.user.addOrder();
+    const userproducts = await req.user.populate('cart.items.productId');
+    const products = userproducts.cart.items.map(items => {
+        return { qty: items.qty, product: {...items.productId._doc } };
+    })
+    const order = new Order({
+        products: products,
+        user: {
+            name: req.user.name,
+            userId: req.user._id
+        }
+    });
+    await order.save()
+    await req.user.clearCart();
     res.redirect('/orders');
 };
 
