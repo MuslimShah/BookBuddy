@@ -1,6 +1,7 @@
 const Product = require('../models/product');
 const User = require('../models/user');
 const Order = require('../models/order');
+// const order = require('../models/order');?
 
 
 
@@ -38,7 +39,7 @@ exports.getIndex = async(req, res, next) => {
 exports.getCart = async(req, res, next) => {
     const products = await req.user.populate('cart.items.productId');
 
-    console.log(products.cart.items);
+    // console.log(products.cart.items);
     res.render('shop/cart', {
         path: '/cart',
         pageTitle: 'Your Cart',
@@ -56,7 +57,7 @@ exports.postCart = async(req, res, next) => {
 
 exports.postCartDeleteProduct = async(req, res, next) => {
     const prodId = req.body.productId;
-    console.log(prodId);
+    // console.log(prodId);
     await req.user.deleteCartItem(prodId);
     res.redirect('/cart');
 };
@@ -80,10 +81,11 @@ exports.postOrder = async(req, res, next) => {
 };
 
 exports.getOrders = async(req, res, next) => {
-    const orders = await req.user.getOrders();
+    const order = await Order.find({ 'user.userId': req.user._id });
+    // console.log(order)
     res.render('shop/orders', {
         path: '/orders',
         pageTitle: 'Your Orders',
-        orders: orders
+        orders: order
     });
 };
