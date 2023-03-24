@@ -1,10 +1,6 @@
 const Product = require('../models/product');
 const User = require('../models/user');
 const Order = require('../models/order');
-// const order = require('../models/order');?
-
-
-
 exports.getProducts = async(req, res, next) => {
     const products = await Product.find();
     res.render('shop/product-list', {
@@ -79,7 +75,7 @@ exports.postOrder = async(req, res, next) => {
     await req.user.clearCart();
     res.redirect('/orders');
 };
-
+//displaying orders
 exports.getOrders = async(req, res, next) => {
     const order = await Order.find({ 'user.userId': req.user._id });
     // console.log(order)

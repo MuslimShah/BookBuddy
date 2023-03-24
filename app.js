@@ -15,6 +15,7 @@ app.set('views', 'views');
 //IMPORTING ROUTES
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
+const authRoutes = require('./routes/auth');
 
 app.use(express.static(path.join(__dirname, 'public')));
 //assigning user to request
@@ -26,10 +27,14 @@ app.use(async(req, res, next) => {
 //user routes middlewares
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
+//auth routes
+app.use(authRoutes);
 //errors
 app.use(errors)
     //page not found
 app.use(pageNotFound);
+
+//starting server
 const start = async() => {
     try {
         console.log(`initializing connection ...`);
