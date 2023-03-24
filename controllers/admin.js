@@ -3,7 +3,8 @@ exports.getAddProduct = (req, res, next) => {
     res.render('admin/edit-product', {
         pageTitle: 'Add Product',
         path: '/admin/add-product',
-        editing: false
+        editing: false,
+        isAuthenticated: req.isLoggedIn
     });
 };
 exports.postAddProduct = (req, res, next) => {
@@ -33,7 +34,8 @@ exports.getEditProduct = async(req, res, next) => {
         pageTitle: 'Edit Product',
         path: '/admin/edit-product',
         editing: editMode,
-        product: product
+        product: product,
+        isAuthenticated: req.isLoggedIn
     });
 };
 exports.postEditProduct = async(req, res, next) => {
@@ -59,7 +61,8 @@ exports.getProducts = async(req, res, next) => {
     res.render('admin/products', {
         prods: products,
         pageTitle: 'Admin Products',
-        path: '/admin/products'
+        path: '/admin/products',
+        isAuthenticated: req.isLoggedIn
     });
 };
 exports.postDeleteProduct = async(req, res, next) => {
