@@ -11,8 +11,21 @@ exports.getLogin = async(req, res, next) => {
     });
 };
 exports.postLogin = async(req, res, next) => {
-   
-    const user = await User.findById("6416f458688fdee19f465065");
+    //extract email and password
+    const {email,password}=req.body;
+    if(!email || !password){
+        return res.status(StatusCodes.BAD_REQUEST).redirect('/signup');
+    }
+    //find user by that email
+    const user =await User.findOne({email});
+    if(!user){
+        return res.status(StatusCodes.UNAUTHORIZED).redirect('/signup');
+    }
+    //compare password
+    const isMatched=await bcrypt.compare(password,user.password);
+    if(!isMatched){
+        return res.status(StatusCodes.UNAUTHORIZED).redirect('/signup');
+    }
     req.session.isLoggedIn=true;  
     req.session.user=user;
     await req.session.save();

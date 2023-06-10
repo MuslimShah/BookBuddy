@@ -44,7 +44,7 @@ app.use(express.static(path.join(__dirname, "public")));
 //assigning user to request
 app.use(async (req, res, next) => {   
   if(!(req.session.user)){
-    req.isLoggedIn=req.session.isLoggedIn;
+    // req.isLoggedIn=req.session.isLoggedIn;
     return next();
   }
   const user = await User.findById(req.session.user._id); 
