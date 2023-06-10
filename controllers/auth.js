@@ -2,12 +2,10 @@ const User=require('../models/user');
 const {StatusCodes}=require('http-status-codes');
 const bcrypt=require('bcryptjs')
 exports.getLogin = async(req, res, next) => {
-    // const isLoggedIn = req.get('Cookie').split(';')[0].trim().split('=')[1];
-    const isLoggedIn=req.session.isLoggedIn;
     res.render('auth/login', {
         path: '/login',
         pageTitle: 'Login',
-        isAuthenticated: isLoggedIn
+        isAuthenticated: req.isLoggedIn
     });
 };
 exports.postLogin = async(req, res, next) => {
@@ -53,6 +51,10 @@ exports.postSignup = async(req, res, next) => {
         return res.status(StatusCodes.BAD_REQUEST).redirect('/signup')
     }
     //check for existing user
+    /*
+    this finding user code was optional as i already validate email by
+    uniqe index but i did so just to follow course instructor
+    */
     const existUser=await User.findOne({email});
     if(existUser){
         return res.status(StatusCodes.BAD_REQUEST).json({msg:'user already exists'})

@@ -1,6 +1,5 @@
 const Product = require('../models/product');
 exports.getAddProduct = (req, res, next) => {
-    console.log('--------------------',req.isLoggedIn)
     res.render('admin/edit-product', {
         pageTitle: 'Add Product',
         path: '/admin/add-product',
@@ -9,7 +8,6 @@ exports.getAddProduct = (req, res, next) => {
     });
 };
 exports.postAddProduct = (req, res, next) => {
-    console.log(req.user)
     const title = req.body.title;
     const imageUrl = req.body.imageUrl;
     const price = req.body.price;
@@ -26,7 +24,6 @@ exports.postAddProduct = (req, res, next) => {
 };
 exports.getEditProduct = async(req, res, next) => {
     const editMode = req.query.edit;
-    console.log('=== in edit page');
     if (!editMode) {
         return res.redirect('/');
     }
@@ -70,6 +67,5 @@ exports.getProducts = async(req, res, next) => {
 exports.postDeleteProduct = async(req, res, next) => {
     const prodId = req.body.productId;
     await Product.deleteOne({ _id: prodId });
-    console.log(`=========== product deleted ============`);
     res.redirect('/admin/products')
 };

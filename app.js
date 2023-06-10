@@ -15,7 +15,7 @@ const store = new MongoDBStore({
 });
 // Catch errors
 store.on("error", function (error) {
-  console.log("----session error --"+error);
+  console.log("----session error --" + error);
 });
 
 const app = express();
@@ -42,17 +42,16 @@ const authRoutes = require("./routes/auth");
 
 app.use(express.static(path.join(__dirname, "public")));
 //assigning user to request
-app.use(async (req, res, next) => {   
-  if(!(req.session.user)){
+app.use(async (req, res, next) => {
+  if (!req.session.user) {
     // req.isLoggedIn=req.session.isLoggedIn;
     return next();
   }
-  const user = await User.findById(req.session.user._id); 
- req.user = user;
   req.isLoggedIn=req.session.isLoggedIn;
-  next();
+  next()
+ 
 });
-//user routes middlewares
+// //user routes middlewares
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 //auth routes
