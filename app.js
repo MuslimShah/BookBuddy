@@ -67,18 +67,6 @@ const start = async () => {
   try {
     console.log(`initializing connection ...`);
     await connectDb(process.env.MONGO_USER);
-    //find user in db if not found create one
-    const user = await User.findOne();
-    if (!user) {
-      const newUser = new User({
-        name: "ali",
-        email: "ali@gmail.com",
-        cart: {
-          items: [],
-        },
-      });
-      newUser.save();
-    }
     const PORT = 3000;
     app.listen(PORT, () => console.log(`connected to port:${PORT}`));
   } catch (error) {

@@ -1,12 +1,13 @@
 const { mongoose, Schema } = require('mongoose');
 const userSchema = new Schema({
-    name: {
-        type: String,
-        required: [true, 'you must enter the name']
-    },
     email: {
         type: String,
-        required: [true, 'you must provide valid email']
+        required: [true, 'you must provide valid email'],
+        unique:[true,'email already exists']
+    },
+    password: {
+        type: String,
+        required: [true, 'you must provide the password']
     },
     cart: {
         items: [{
