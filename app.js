@@ -42,9 +42,14 @@ const authRoutes = require("./routes/auth");
 
 app.use(express.static(path.join(__dirname, "public")));
 //assigning user to request
-app.use(async (req, res, next) => {
-  const user = await User.findById("6416f458688fdee19f465065");
-  req.user = user;
+app.use(async (req, res, next) => {   
+  if(!(req.session.user)){
+    req.isLoggedIn=req.session.isLoggedIn;
+    return next();
+  }
+  const user = await User.findById(req.session.user._id); 
+ req.user = user;
+  req.isLoggedIn=req.session.isLoggedIn;
   next();
 });
 //user routes middlewares
