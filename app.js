@@ -9,7 +9,7 @@ const errors = require("./errors/errors");
 const cookeParser = require("cookie-parser");
 const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
-const csrf=require('csurf');
+const csrf = require("csurf");
 const store = new MongoDBStore({
   uri: process.env.MONGO_USER,
   collection: "sessions",
@@ -54,14 +54,14 @@ app.use(express.static(path.join(__dirname, "public")));
 //   }
 //   req.isLoggedIn=req.session.isLoggedIn;
 //   next()
- 
+
 // });
 //local variable passed to views
-app.use((req,res,next)=>{
-  res.locals.isAuthenticated=req.session.isLoggedIn;
-  res.locals.csrfToken=req.csrfToken();
-  next()
-})
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.session.isLoggedIn;
+  res.locals.csrfToken = req.csrfToken();
+  next();
+});
 // //user routes middlewares
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
