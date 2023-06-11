@@ -10,6 +10,7 @@ const cookeParser = require("cookie-parser");
 const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
 const csrf = require("csurf");
+const flash=require('connect-flash');
 const store = new MongoDBStore({
   uri: process.env.MONGO_USER,
   collection: "sessions",
@@ -41,6 +42,8 @@ app.use(cookeParser());
 //in which the attacker can missuse your session
 //IMPORTING ROUTES
 app.use(csrf());
+//use flash to store error to session for a while 
+app.use(flash());
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 const authRoutes = require("./routes/auth");

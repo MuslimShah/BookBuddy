@@ -8,7 +8,9 @@
         <%- include('../includes/navigation.ejs') %>
 
             <main>
+               
                 <form class="login-form" action="/login" method="POST">
+                
                     <div class="form-control">
                         <label for="email">E-mail</label>
                         <input type="email" name="email" id="email">
@@ -20,7 +22,9 @@
 
                     </div>
 
-
+                    <%if(errorMessage){%>
+                        <div class="user-message user-message--error "><%=errorMessage%></div>
+                        <%}%>
                     <button class="btn" type="submit">Login</button>
                 </form>
             </main>

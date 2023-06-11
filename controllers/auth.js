@@ -2,9 +2,17 @@ const User = require("../models/user");
 const { StatusCodes } = require("http-status-codes");
 const bcrypt = require("bcryptjs");
 exports.getLogin = async (req, res, next) => {
+    let message=req.flash('error');
+    if(message.length>0){
+        message=message[0];
+    }
+    else{
+        message=null;
+    }
   res.render("auth/login", {
     path: "/login",
     pageTitle: "Login",
+    errorMessage:message
     // isAuthenticated: req.isLoggedIn,
     // csrfToken:req.csrfToken()
   });
@@ -13,17 +21,20 @@ exports.postLogin = async (req, res, next) => {
   //extract email and password
   const { email, password } = req.body;
   if (!email || !password) {
-    return res.status(StatusCodes.BAD_REQUEST).redirect("/signup");
+    req.flash('error',"all fields are required");
+    return res.status(StatusCodes.BAD_REQUEST).redirect("/login");
   }
   //find user by that email
   const user = await User.findOne({ email });
   if (!user) {
-    return res.status(StatusCodes.UNAUTHORIZED).redirect("/signup");
+    req.flash('error',"no user found with given email");
+    return res.status(StatusCodes.UNAUTHORIZED).redirect("/login");
   }
   //compare password
   const isMatched = await bcrypt.compare(password, user.password);
   if (!isMatched) {
-    return res.status(StatusCodes.UNAUTHORIZED).redirect("/signup");
+    req.flash('error',"incorrect password");
+    return res.status(StatusCodes.UNAUTHORIZED).redirect("/login");
   }
   req.session.isLoggedIn = true;
   req.session.user = user;
@@ -36,10 +47,18 @@ exports.postLogout = async (req, res, next) => {
 };
 //------------ signup --------------
 exports.getSignup = async (req, res, next) => {
-  const isLoggedIn = req.session.isLoggedIn;
+    let message=req.flash('error');
+    if(message.length>0){
+        message=message[0];
+    }
+    else{
+        message=null;
+    }
+
   res.render("auth/signup", {
     path: "/signup",
     pageTitle: "Signup",
+    errorMessage:message
     // isAuthenticated: isLoggedIn
   });
 };
@@ -56,12 +75,14 @@ exports.postSignup = async (req, res, next) => {
     */
   const existUser = await User.findOne({ email });
   if (existUser) {
+    req.flash('error','user with given email already exists')
     return res
       .status(StatusCodes.BAD_REQUEST)
-      .json({ msg: "user already exists" });
+      .redirect('/signup');
   }
   //confirm password ==>
   if (password !== confirmPassword) {
+    req.flash('error','password does not match');
     return res.status(StatusCodes.BAD_REQUEST).redirect("/signup");
   }
   //hash password
