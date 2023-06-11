@@ -7,7 +7,7 @@ exports.getProducts = async(req, res, next) => {
         prods: products,
         pageTitle: 'All Products',
         path: '/products',
-        isAuthenticated: req.isLoggedIn
+        // isAuthenticated: req.isLoggedIn
     });
 };
 //product details
@@ -18,7 +18,7 @@ exports.getProduct = async(req, res, next) => {
         product: product,
         pageTitle: product.title,
         path: '/products',
-        isAuthenticated: req.isLoggedIn
+        // isAuthenticated: req.isLoggedIn
     });
 };
 
@@ -28,20 +28,19 @@ exports.getIndex = async(req, res, next) => {
         prods: products,
         pageTitle: 'Shop',
         path: '/',
-        isAuthenticated: req.isLoggedIn
+        // isAuthenticated: req.isLoggedIn,
+        // csrfToken:req.csrfToken()
     });
 
 };
 
 exports.getCart = async(req, res, next) => {
     const products = await req.user.populate('cart.items.productId');
-    // console.log(products.cart.items);
-    console.log("----user",req.user)
     res.render('shop/cart', {
         path: '/cart',
         pageTitle: 'Your Cart',
         products: products.cart.items,
-        isAuthenticated: req.isLoggedIn
+        // isAuthenticated: req.isLoggedIn
     });
 
 };
@@ -55,7 +54,6 @@ exports.postCart = async(req, res, next) => {
 
 exports.postCartDeleteProduct = async(req, res, next) => {
     const prodId = req.body.productId;
-    // console.log(prodId);
     await req.user.deleteCartItem(prodId);
     res.redirect('/cart');
 };
@@ -80,11 +78,10 @@ exports.postOrder = async(req, res, next) => {
 //displaying orders
 exports.getOrders = async(req, res, next) => {
     const order = await Order.find({ 'user.userId': req.user._id });
-    // console.log(order)
     res.render('shop/orders', {
         path: '/orders',
         pageTitle: 'Your Orders',
         orders: order,
-        isAuthenticated: req.isLoggedIn
+        // isAuthenticated: req.isLoggedIn
     });
 };

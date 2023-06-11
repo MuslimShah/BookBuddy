@@ -9,6 +9,7 @@ const errors = require("./errors/errors");
 const cookeParser = require("cookie-parser");
 const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
+const csrf=require('csurf');
 const store = new MongoDBStore({
   uri: process.env.MONGO_USER,
   collection: "sessions",
@@ -35,22 +36,32 @@ app.use(
 app.set("view engine", "ejs");
 app.set("views", "views");
 app.use(cookeParser());
+//using csruf package to avoid csrf attacts
+//CSRG==>cross site request forgery attack
+//in which the attacker can missuse your session
 //IMPORTING ROUTES
+app.use(csrf());
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 const authRoutes = require("./routes/auth");
 
 app.use(express.static(path.join(__dirname, "public")));
 //assigning user to request
-app.use(async (req, res, next) => {
-  if (!req.session.user) {
-    // req.isLoggedIn=req.session.isLoggedIn;
-    return next();
-  }
-  req.isLoggedIn=req.session.isLoggedIn;
-  next()
+// app.use(async (req, res, next) => {
+//   if (!req.session.user) {
+//     // req.isLoggedIn=req.session.isLoggedIn;
+//     return next();
+//   }
+//   req.isLoggedIn=req.session.isLoggedIn;
+//   next()
  
-});
+// });
+//local variable passed to views
+app.use((req,res,next)=>{
+  res.locals.isAuthenticated=req.session.isLoggedIn;
+  res.locals.csrfToken=req.csrfToken();
+  next()
+})
 // //user routes middlewares
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);

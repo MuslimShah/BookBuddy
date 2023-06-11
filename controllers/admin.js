@@ -4,7 +4,7 @@ exports.getAddProduct = (req, res, next) => {
         pageTitle: 'Add Product',
         path: '/admin/add-product',
         editing: false,
-        isAuthenticated: req.isLoggedIn
+        // isAuthenticated: req.isLoggedIn
     });
 };
 exports.postAddProduct = (req, res, next) => {
@@ -34,7 +34,7 @@ exports.getEditProduct = async(req, res, next) => {
         path: '/admin/edit-product',
         editing: editMode,
         product: product,
-        isAuthenticated: req.isLoggedIn
+        // isAuthenticated: req.isLoggedIn
     });
 };
 exports.postEditProduct = async(req, res, next) => {
@@ -61,7 +61,7 @@ exports.getProducts = async(req, res, next) => {
         prods: products,
         pageTitle: 'Admin Products',
         path: '/admin/products',
-        isAuthenticated: req.isLoggedIn
+        // isAuthenticated: req.isLoggedIn
     });
 };
 exports.postDeleteProduct = async(req, res, next) => {
