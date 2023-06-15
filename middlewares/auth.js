@@ -1,5 +1,5 @@
-const User=require('../models/user')
-const auth = async(req, res, next) => {
+const User = require("../models/user");
+const auth = async (req, res, next) => {
   if (!req.session.isLoggedIn) {
     return res.redirect("/login");
   }
