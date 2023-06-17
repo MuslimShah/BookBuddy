@@ -9,26 +9,20 @@
 
             <main>
                
-                <form class="login-form" action="/login" method="POST">
-                <h1>Login</h1>
+                <form class="login-form" action="/reset" method="POST">
+                <h1>Reset</h1>
                     <div class="form-control">
                         <label for="email">E-mail</label>
                         <input type="email" name="email" id="email">
                     </div>
                     <div class="form-control">
-                        <label for="Password">Password</label>
-                        <input type="password" name="password" id="password">
                         <input type="hidden" name="_csrf" value="<%=csrfToken%>">
-
                     </div>
 
                     <%if(errorMessage){%>
                         <div class="user-message user-message--error "><%=errorMessage%></div>
                         <%}%>
-                    <button class="btn" type="submit">Login</button>
-                    <br>
-                    <a href="/reset"> click here to reset password</a>
+                    <button class="btn" type="submit">Reset Password</button>
                 </form>
-                
             </main>
             <%- include('../includes/end.ejs') %>
