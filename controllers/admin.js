@@ -43,11 +43,15 @@ exports.postEditProduct = async (req, res, next) => {
   const updatedPrice = req.body.price;
   const updatedImageUrl = req.body.imageUrl;
   const updatedDesc = req.body.description;
+  console.log(req.user._id)
   if (!updatedTitle || !updatedPrice || !updatedImageUrl || !updatedDesc) {
     return res.json({ msg: "please fill complete information" });
   }
 
   const product = await Product.findById(prodId);
+  if(product.userId.toString() !==req.user._id.toString()){
+    return res.redirect('/');
+  }
   product.title = updatedTitle;
   product.price = updatedPrice;
   product.description = updatedDesc;
@@ -56,7 +60,7 @@ exports.postEditProduct = async (req, res, next) => {
   res.redirect("/admin/products");
 };
 exports.getProducts = async (req, res, next) => {
-  const products = await Product.find();
+  const products = await Product.find({userId:req.user._id});
   res.render("admin/products", {
     prods: products,
     pageTitle: "Admin Products",
@@ -66,6 +70,6 @@ exports.getProducts = async (req, res, next) => {
 };
 exports.postDeleteProduct = async (req, res, next) => {
   const prodId = req.body.productId;
-  await Product.deleteOne({ _id: prodId });
+  await Product.deleteOne({ _id: prodId ,userId:req.user._id});
   res.redirect("/admin/products");
 };

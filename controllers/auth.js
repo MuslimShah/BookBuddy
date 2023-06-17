@@ -158,13 +158,13 @@ exports.postResetPassword = async (req, res, next) => {
     from: process.env.ADMIN_EMAIL, // sender address
     to: email, // list of receivers
     subject: "Password Reset Email", // Subject line
-    text: `<html lang="en">
-  
-    <body>
-    <p>you requested a password reset</p>
-       <p>click this <a href="http://localhost:3000/reset/${token}">link</a> to reset the password</p>
-    </body>
-  </html>`,
+    html: `<html lang="en">  
+              <body>
+                 <p>you requested a password reset</p>
+                 <p>click this <a href="http://localhost:3000/reset/${token}">link</a> to reset the password</p>
+                 <p>If this was not you ignore this email</p>
+               </body>
+           </html>`,
   };
   transporter.sendMail(mailOptions, function (error, info) {
     if (error) {
@@ -205,26 +205,36 @@ exports.getNewPassword = async (req, res, next) => {
     path: "/new-password",
     pageTitle: "Update Password",
     errorMessage: message,
-    userId:user._id.toString(),
-    token:token
+    userId: user._id.toString(),
+    token: token,
   });
 };
 
 //update user password in
-exports.postNewPassword=async (req,res,next)=>{
-  const {password,confirmPassword,userId}=req.body;
-  if(!password || !confirmPassword){
-    req.flash('error','all fields are required')
-    return res.redirect(`/reset`)
+exports.postNewPassword = async (req, res, next) => {
+  const { password, confirmPassword, userId, token } = req.body;
+  if (!password || !confirmPassword) {
+    req.flash("error", "all fields are required");
+    return res.redirect(`/reset`);
   }
-  if(password!==confirmPassword){
-    req.flash('error','passwords does not match');
+  if (password !== confirmPassword) {
+    req.flash("error", "passwords does not match");
+    return res.redirect("/reset");
+  }
+  const user = await User.findOne({
+    _id: userId,
+    resetToken: token,
+    resetTokenExpiration: { $gt: Date.now() },
+  });
+  if(!user){
+    req.flash('error','link expired')
     return res.redirect('/reset');
   }
-  const user=await User.findOne({_id:userId})
-  const salt =await bcrypt.genSalt(10);
-  const hashedPassword=await bcrypt.hash(password,salt);
-  user.password=hashedPassword;
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(password, salt);
+  user.password = hashedPassword;
+  user.resetToken=undefined;
+  user.resetTokenExpiration=undefined;
   await user.save();
-  res.redirect('/login')
-}
+  res.redirect("/login");
+};
