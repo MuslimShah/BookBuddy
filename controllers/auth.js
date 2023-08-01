@@ -1,3 +1,5 @@
+const {validationResult}=require('express-validator')
+
 const User = require("../models/user");
 const { StatusCodes } = require("http-status-codes");
 const nodemailer = require("nodemailer");
@@ -27,6 +29,20 @@ exports.getLogin = async (req, res, next) => {
   });
 };
 exports.postLogin = async (req, res, next) => {
+//testing validation
+const result=validationResult(req);
+if(!result.isEmpty()){
+    const error=result.array()[0].msg
+    return res.render("auth/login", {
+      path: "/login",
+      pageTitle: "Login",
+      errorMessage: error,
+      // isAuthenticated: req.isLoggedIn,
+      // csrfToken:req.csrfToken()
+    });
+}
+
+
   //extract email and password
   const { email, password } = req.body;
   if (!email || !password) {
@@ -72,6 +88,21 @@ exports.getSignup = async (req, res, next) => {
 };
 
 exports.postSignup = async (req, res, next) => {
+//testing validation
+const result=validationResult(req);
+if(!result.isEmpty()){
+    const error=result.array()[0].msg
+    return res.render("auth/signup", {
+      path: "/signup",
+      pageTitle: "Signup",
+      errorMessage: error,
+      // isAuthenticated: req.isLoggedIn,
+      // csrfToken:req.csrfToken()
+    });
+}
+
+
+
   const { email, password, confirmPassword } = req.body;
   if (!email || !password || !confirmPassword) {
     return res.status(StatusCodes.BAD_REQUEST).redirect("/signup");
@@ -124,6 +155,7 @@ exports.postSignup = async (req, res, next) => {
 //get reset password
 exports.getResetPassword = async (req, res, next) => {
   let message = req.flash("error");
+  console.log(message);
   if (message.length > 0) {
     message = message[0];
   } else {
@@ -166,17 +198,19 @@ exports.postResetPassword = async (req, res, next) => {
                </body>
            </html>`,
   };
-  transporter.sendMail(mailOptions, function (error, info) {
+
+
+
+  
+  transporter.sendMail(mailOptions, async function (error, info) {
     if (error) {
       console.log("sending email error");
       return res.redirect("/reset");
     } else {
-      req.flash("error", "email sent to the user");
-      console.log("email sent to the user");
-      return res.redirect("/reset");
+      console.log("email sent to the user",info.response);
+      req.flash("error", "email sent to the user");    
     }
   });
-
   res.redirect("/reset");
 };
 
@@ -197,7 +231,7 @@ exports.getNewPassword = async (req, res, next) => {
 
   if (message.length > 0) {
     message = message[0];
-  } else {
+  } else { 
     message = null;
   }
 
@@ -226,15 +260,15 @@ exports.postNewPassword = async (req, res, next) => {
     resetToken: token,
     resetTokenExpiration: { $gt: Date.now() },
   });
-  if(!user){
-    req.flash('error','link expired')
-    return res.redirect('/reset');
-  }
+  if (!user) {
+    req.flash("error", "link expired");
+    return res.redirect("/reset");
+  } 
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
   user.password = hashedPassword;
-  user.resetToken=undefined;
-  user.resetTokenExpiration=undefined;
+  user.resetToken = undefined;
+  user.resetTokenExpiration = undefined;
   await user.save();
   res.redirect("/login");
 };
