@@ -83,41 +83,40 @@ exports.getSignup = async (req, res, next) => {
     path: "/signup",
     pageTitle: "Signup",
     errorMessage: message,
-    // isAuthenticated: isLoggedIn
+    oldInput:{
+      email:"",
+      password:"",
+      confirmPassword:""
+    },
+    validationError:[]
+    
   });
 };
 
 exports.postSignup = async (req, res, next) => {
+  //recieving inputs
+  const { email, password, confirmPassword } = req.body;
 //testing validation
-const result=validationResult(req);
-if(!result.isEmpty()){
-    const error=result.array()[0].msg
+const validResult=validationResult(req);
+if(!validResult.isEmpty()){
+    const error=validResult.array()[0].msg
     return res.render("auth/signup", {
       path: "/signup",
       pageTitle: "Signup",
       errorMessage: error,
-      // isAuthenticated: req.isLoggedIn,
-      // csrfToken:req.csrfToken()
+      oldInput:{
+        email:email,
+        password:password,
+        confirmPassword:confirmPassword
+      },
+      validationError:validResult.array()
+
     });
 }
-
-
-
-  const { email, password, confirmPassword } = req.body;
+ 
   if (!email || !password || !confirmPassword) {
     return res.status(StatusCodes.BAD_REQUEST).redirect("/signup");
   }
-  //check for existing user
-  /*
-    this finding user code was optional as i already validate email by
-    uniqe index but i did so just to follow course instructor
-    */
-  const existUser = await User.findOne({ email });
-  if (existUser) {
-    req.flash("error", "user with given email already exists");
-    return res.status(StatusCodes.BAD_REQUEST).redirect("/signup");
-  }
-
   //hash password
   const salt = await bcrypt.genSalt(10);
   const hasedPassword = await bcrypt.hash(password, salt);

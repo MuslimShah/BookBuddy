@@ -7,25 +7,29 @@ const router = express.Router();
 //-------------- VALIDATING INPUT DATA ---------------
 
 const validateData = [
-    //<------------- validating email --------------->
+  //<------------- validating email --------------->
   body("email")
     .isEmail()
     .withMessage("Invalid email")
     .custom(async (value, { req }) => {
-      //checking for existing user
+      //check for existing user
+      /*
+        this finding user code was optional as i already validate email by
+        uniqe index but i did so just to follow course instructor
+        */
       const existUser = await User.findOne({ email: value });
       if (existUser) {
         throw new Error("user with email already exists..");
       }
       return true;
     }),
-    //<-------------- validating password ------------->
+  //<-------------- validating password ------------->
   body("password", "alpha numeric password atleast 8 characters")
     .isLength({ min: 8 })
     .isAlphanumeric(),
   //checking  passwords equality......
   body("confirmPassword").custom((value, { req }) => {
-    if (!value === req.body.password) {
+    if (value !== req.body.password) {
       throw new Error("password does not match");
     }
     return true;
