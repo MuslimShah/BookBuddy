@@ -1,21 +1,30 @@
 const express = require("express");
 const authController = require("../controllers/auth");
 const { body } = require("express-validator");
+const User = require("../models/user");
 const router = express.Router();
 
 //-------------- VALIDATING INPUT DATA ---------------
 
-
 const validateData = [
-    body("email")
-  .isEmail()
-  .withMessage("Invalid email"),
-  body("password", "alpha numeric password atleast 5 characters")
+    //<------------- validating email --------------->
+  body("email")
+    .isEmail()
+    .withMessage("Invalid email")
+    .custom(async (value, { req }) => {
+      //checking for existing user
+      const existUser = await User.findOne({ email: value });
+      if (existUser) {
+        throw new Error("user with email already exists..");
+      }
+      return true;
+    }),
+    //<-------------- validating password ------------->
+  body("password", "alpha numeric password atleast 8 characters")
     .isLength({ min: 8 })
     .isAlphanumeric(),
+  //checking  passwords equality......
   body("confirmPassword").custom((value, { req }) => {
-    console.log("hasdhfasofhsdfhsdih");
-
     if (!value === req.body.password) {
       throw new Error("password does not match");
     }

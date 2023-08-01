@@ -117,11 +117,7 @@ if(!result.isEmpty()){
     req.flash("error", "user with given email already exists");
     return res.status(StatusCodes.BAD_REQUEST).redirect("/signup");
   }
-  //confirm password ==>
-  if (password !== confirmPassword) {
-    req.flash("error", "password does not match");
-    return res.status(StatusCodes.BAD_REQUEST).redirect("/signup");
-  }
+
   //hash password
   const salt = await bcrypt.genSalt(10);
   const hasedPassword = await bcrypt.hash(password, salt);
