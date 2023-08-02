@@ -7,7 +7,7 @@ const router = express.Router();
 //-------------- VALIDATING INPUT DATA ---------------
 
 const validateData = [
-  //<------------- validating email --------------->
+  //<------------- validating email  for signup--------------->
   body("email")
     .isEmail()
     .withMessage("Invalid email")
@@ -35,12 +35,35 @@ const validateData = [
     return true;
   }),
 ];
+const validateLogin=[
+    body("email")
+    .isEmail()
+    .withMessage("Invalid email")
+    .custom(async (value, { req }) => {
+      //check for existing user
+      /*
+        this finding user code was optional as i already validate email by
+        uniqe index but i did so just to follow course instructor
+        */
+      const existUser = await User.findOne({ email: value });
+      if (!existUser) {
+        throw new Error("user with email does not exists");
+      }
+      return true;
+    }),
+    body("password").custom((value,{req})=>{
+        if(value.length===0){
+            throw new Error("password cannot be empty");
+        }
+        return true;
+    })
+]
 
 //================== HANDLING ROUTES ============================
 router.get("/login", authController.getLogin);
 router.get("/signup", authController.getSignup);
 router.post("/signup", validateData, authController.postSignup);
-router.post("/login", authController.postLogin);
+router.post("/login",validateLogin, authController.postLogin);
 router.post("/logout", authController.postLogout);
 
 //reset passwrord

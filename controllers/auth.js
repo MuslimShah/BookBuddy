@@ -24,11 +24,16 @@ exports.getLogin = async (req, res, next) => {
     path: "/login",
     pageTitle: "Login",
     errorMessage: message,
-    // isAuthenticated: req.isLoggedIn,
-    // csrfToken:req.csrfToken()
+      oldInput:{
+      email:"",
+      password:""
+    },
+    validationError:[]
   });
 };
 exports.postLogin = async (req, res, next) => {
+   //extract email and password
+   const { email, password } = req.body;
 //testing validation
 const result=validationResult(req);
 if(!result.isEmpty()){
@@ -37,29 +42,36 @@ if(!result.isEmpty()){
       path: "/login",
       pageTitle: "Login",
       errorMessage: error,
-      // isAuthenticated: req.isLoggedIn,
-      // csrfToken:req.csrfToken()
+      oldInput:{
+        email:email,
+        password:password
+      },
+    validationError:result.array()
     });
 }
 
 
-  //extract email and password
-  const { email, password } = req.body;
+ 
   if (!email || !password) {
     req.flash("error", "all fields are required");
     return res.status(StatusCodes.BAD_REQUEST).redirect("/login");
   }
   //find user by that email
   const user = await User.findOne({ email });
-  if (!user) {
-    req.flash("error", "no user found with given email");
-    return res.status(StatusCodes.UNAUTHORIZED).redirect("/login");
-  }
   //compare password
   const isMatched = await bcrypt.compare(password, user.password);
+  //if password is not correct ...
   if (!isMatched) {
-    req.flash("error", "incorrect password");
-    return res.status(StatusCodes.UNAUTHORIZED).redirect("/login");
+    return res.render("auth/login", {
+      path: "/login",
+      pageTitle: "Login",
+      errorMessage: "incorrect password",
+      oldInput:{
+        email:email,
+        password:password
+      },
+    validationError:result.array()
+    });
   }
   req.session.isLoggedIn = true;
   req.session.user = user;
