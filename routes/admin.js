@@ -29,7 +29,7 @@ router.post('/add-product',validateProduct,auth, adminController.postAddProduct)
 
 router.get('/edit-product/:productId',auth, adminController.getEditProduct);
 
-router.post('/edit-product',auth, adminController.postEditProduct);
+router.post('/edit-product', validateProduct,auth, adminController.postEditProduct);
 
 router.post('/delete-product', auth,adminController.postDeleteProduct);
 

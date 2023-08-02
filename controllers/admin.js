@@ -8,6 +8,7 @@ exports.getAddProduct = (req, res, next) => {
     editing: false,
     hasError: false,
     errorMessage: null,
+    validationError:[]
 
     // isAuthenticated: req.isLoggedIn
   });
@@ -41,6 +42,7 @@ exports.postAddProduct = (req, res, next) => {
         description: description,
       },
       errorMessage: resultValidation.array()[0].msg,
+    validationError:resultValidation.array()
     });
   }
 
@@ -48,6 +50,7 @@ exports.postAddProduct = (req, res, next) => {
   res.redirect("/admin/products");
 };
 exports.getEditProduct = async (req, res, next) => {
+
   const editMode = req.query.edit;
   if (!editMode) {
     return res.redirect("/");
@@ -61,16 +64,35 @@ exports.getEditProduct = async (req, res, next) => {
     product: product,
     hasError: false,
     errorMessage: null,
+    validationError:[]
     // isAuthenticated: req.isLoggedIn
   });
 };
 exports.postEditProduct = async (req, res, next) => {
+  //receiving updated data from the form
   const prodId = req.body.productId;
   const updatedTitle = req.body.title;
   const updatedPrice = req.body.price;
   const updatedImageUrl = req.body.imageUrl;
   const updatedDesc = req.body.description;
-  console.log(req.user._id);
+    //validating edit product form ....
+  const resultValidation=validationResult(req);
+  if (!resultValidation.isEmpty()) {
+    return res.render("admin/edit-product", {
+      pageTitle: "Add Product",
+      path: "/admin/add-product",
+      editing: true,
+      hasError: true,
+      product: {
+        title: updatedTitle,
+        imageUrl: updatedImageUrl,
+        price: updatedPrice,
+        description: updatedDesc,
+      },
+      errorMessage: resultValidation.array()[0].msg,
+      validationError:resultValidation.array()
+    });
+  }
   if (!updatedTitle || !updatedPrice || !updatedImageUrl || !updatedDesc) {
     return res.json({ msg: "please fill complete information" });
                                                                                                             }
