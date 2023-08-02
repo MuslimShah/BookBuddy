@@ -22,19 +22,26 @@ const validateData = [
         throw new Error("user with email already exists..");
       }
       return true;
-    }),
+    }).normalizeEmail().trim(),
   //<-------------- validating password ------------->
   body("password", "alpha numeric password atleast 8 characters")
     .isLength({ min: 8 })
-    .isAlphanumeric(),
+    .isAlphanumeric().trim(),
   //checking  passwords equality......
   body("confirmPassword").custom((value, { req }) => {
     if (value !== req.body.password) {
       throw new Error("password does not match");
     }
     return true;
-  }),
+  }).trim(),
 ];
+
+
+/**validating login data
+ * if user with email does not exist throw not found message
+ * if password is empty throw message
+ * if email is not in correct format throw message
+ */
 const validateLogin=[
     body("email")
     .isEmail()
@@ -50,13 +57,13 @@ const validateLogin=[
         throw new Error("user with email does not exists");
       }
       return true;
-    }),
+    }).normalizeEmail().trim(),
     body("password").custom((value,{req})=>{
         if(value.length===0){
             throw new Error("password cannot be empty");
         }
         return true;
-    })
+    }).trim()
 ]
 
 //================== HANDLING ROUTES ============================

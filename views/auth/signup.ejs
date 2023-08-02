@@ -21,14 +21,14 @@
             <div class="form-control">
                 <label for="password">Password</label>
                 <input 
-                class="<%=validationError.find(e=>e.path==='email') ? 'invalid':''%>"
+                class="<%=validationError.find(e=>e.path==='password') ? 'invalid':''%>"
 
                 type="password" name="password" id="password" value="<%=oldInput.password%>">
             </div>
             <div class="form-control">
                 <label for="confirmPassword">Confirm Password</label>
                 <input 
-                                class="<%=validationError.find(e=>e.path==='email') ? 'invalid':''%>"
+                                class="<%=validationError.find(e=>e.path==='confirmPassword') ? 'invalid':''%>"
 
                 type="password" name="confirmPassword" id="confirmPassword" value="<%=oldInput.confirmPassword%>">
                 <input type="hidden" name="_csrf" value="<%=csrfToken%>">

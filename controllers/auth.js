@@ -62,6 +62,7 @@ if(!result.isEmpty()){
   const isMatched = await bcrypt.compare(password, user.password);
   //if password is not correct ...
   if (!isMatched) {
+    console.log(result.array())
     return res.render("auth/login", {
       path: "/login",
       pageTitle: "Login",
@@ -70,7 +71,7 @@ if(!result.isEmpty()){
         email:email,
         password:password
       },
-    validationError:result.array()
+    validationError:[{path:'password'    }]
     });
   }
   req.session.isLoggedIn = true;
