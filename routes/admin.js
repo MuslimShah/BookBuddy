@@ -12,10 +12,10 @@ const router = express.Router();
 //========================== validating product =====================
 
 const validateProduct=[
-    body('title').isString().notEmpty().trim(),
-    body('imageUrl').isString().notEmpty().trim(),
-    body('price').trim().notEmpty(),
-    body('description').isString().notEmpty().trim()
+    body('title','enter a valid title').trim().isLength({min:3}),
+    body('imageUrl','enter a valid image url').isURL(),
+    body('price','enter a valid price').isFloat(),
+    body('description','description too short').isLength({min:3}).trim()
 ]
 
 // /admin/add-product => GET
