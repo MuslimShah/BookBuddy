@@ -8,6 +8,7 @@ const User = require("./models/user");
 const errors = require("./errors/errors");
 const cookeParser = require("cookie-parser");
 const session = require("express-session");
+const get500=require('./errors/500')
 const MongoDBStore = require("connect-mongodb-session")(session);
 const csrf = require("csurf");
 const flash=require('connect-flash');
@@ -70,6 +71,8 @@ app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 //auth routes
 app.use(authRoutes);
+//error route
+app.get('/500',get500)
 //errors
 app.use(errors);
 //page not found
@@ -83,7 +86,7 @@ const start = async () => {
     const PORT = 3000;
     app.listen(PORT, () => console.log(`connected to port:${PORT}`));
   } catch (error) {
-    console.log(error);
+      throw new Error("cannot connect to database")
   }
 };
 start();
